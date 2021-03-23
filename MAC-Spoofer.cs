@@ -55,7 +55,7 @@ namespace MAC_Spoofer
             String MAC = "";
             for(int i = 0; i < 12; i++)
             {
-                MAC += abc[r.Next(0,16)];
+                MAC += abc[r.Next(0,15)];
             }
             return MAC;
         }
