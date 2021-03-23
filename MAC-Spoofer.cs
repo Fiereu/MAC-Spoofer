@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Windows;
 using System.Collections.Generic;
@@ -53,7 +53,7 @@ namespace MAC_Spoofer
             Random r = new Random((int)DateTime.Now.ToFileTimeUtc());
             String abc = "0123456789ABCDEF";
             String MAC = "";
-            for(int i = 0; i < 12; i++)
+            for(int i = 1; i < 12; i++)
             {
                 MAC += abc[r.Next(0,15)];
             }
@@ -62,17 +62,25 @@ namespace MAC_Spoofer
 
         private bool DisableNetworkDriver()
         {
-            
-            if ((uint)NetworkAdapter.InvokeMethod("Disable", null) != 0)
-                return false;
-            return true;
+
+            try
+            {
+                if ((uint)NetworkAdapter.InvokeMethod("Disable", null) == 0)
+                    return true;
+            }
+            catch (Exception ex) {}
+            return false;
         }
         private bool EnableNetworkDriver()
         {
 
-            if ((uint)NetworkAdapter.InvokeMethod("Enable", null) != 0)
-                return false;
-            return true;
+            try
+            {
+                if ((uint)NetworkAdapter.InvokeMethod("Enable", null) == 0)
+                    return true;
+            }
+            catch (Exception ex) { }
+            return false;
         }
 
         public static List<String> GetDeviceIDs()
@@ -116,7 +124,9 @@ namespace MAC_Spoofer
         {
             if (!DisableNetworkDriver())
                 return false;
+
             NetworkInterface.SetValue("NetworkAddress", GenerateRandomMAC(), RegistryValueKind.String);
+
             if (!EnableNetworkDriver())
                 return false;
             return true;
@@ -126,7 +136,9 @@ namespace MAC_Spoofer
         {
             if (!DisableNetworkDriver())
                 return false;
+
             NetworkInterface.DeleteValue("NetworkAddress");
+
             if (!EnableNetworkDriver())
                 return false;
             return true;
